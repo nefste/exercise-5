@@ -6,6 +6,7 @@
 
 */
 
+
 mas simple_mas_1 {
 
     agent illuminance_controller : task1/illuminance_controller.asl {
@@ -16,11 +17,14 @@ mas simple_mas_1 {
         focus : room.lights
     }
 
+
     workspace room {
         
         artifact illuminance_sensor: task1.IlluminanceSensor
         artifact weather_station : task1.WeatherStation
         artifact blinds : task1.Blinds
         artifact lights : task1.LightBulb
+ 
     }
+    
 }

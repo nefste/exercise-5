@@ -5,15 +5,15 @@
 /* Task 1.2.3 End of your solution */
 
 /* Initial goals */
-!start_sum(4,2). // uncomment for Task 1.2.1
-!start_sum(4,-2). // uncomment for Task 1.2.1
+//!start_sum(4,2). // uncomment for Task 1.2.1
+//!start_sum(4,-2). // uncomment for Task 1.2.1
 //!start_division(4,2). // uncomment for Task 1.2.2
 //!start_division(4,2.5). // uncomment for Task 1.2.2
 //!start_division(4,0). // uncomment for Task 1.2.2
 //!start_even_or_odd(4). // uncomment for Task 1.2.3
 //!start_even_or_odd(5). // uncomment for Task 1.2.3
-//!start_list_generation(0,4). // uncomment for Task 1.2.4
-//!print_list([0,1,2,3,4]). // uncomment for an example of handling a list with recursion
+!start_list_generation(0,4). // uncomment for Task 1.2.4
+!print_list([0,1,2,3,4]). // uncomment for an example of handling a list with recursion
 
 /* 
  * Plan for reacting to the addition of the goal !start_sum
@@ -29,7 +29,8 @@
 /* Task 1.2.1 Start of your solution */
 @compute_sum_task_1_2_1_plan
 +!compute_sum(X,Y,Sum) : true <-
-    .print("Implement Task 1.2.1").
+    Sum = X + Y;
+    .print(X, " + ", Y, " = ", Sum).
 /* Task 1.2.1 End of your solution */
 
 @start_division_task_1_2_2_plan
@@ -38,6 +39,18 @@
     .print(Dividend, "/", Divisor, "=", Quotient).
 
 /* Task 1.2.2 Start of your solution */
+
+@division_by_zero_task_1_2_2_plan
++!compute_division(Dividend, Divisor, _) : Divisor == 0 <- 
+    .print(Dividend, " / ", Divisor, " = Error, Division by zero is not possible!!!").
+
+
+@valid_division_task_1_2_2_plan
++!compute_division(Dividend, Divisor, Quotient) : (Divisor \== 0) <-    
+    Quotient = Dividend / Divisor;
+    .print(Dividend, " / ", Divisor, " = ", Quotient, ", Valid Division.").
+// Open Issue with the statement "!=" for the Divisor (Divisor != 0), wasted a lot of time, is \== really the way to go in ASL?
+
 /* Task 1.2.2 End of your solution */
 
 /* 
@@ -60,6 +73,10 @@
 +!start_even_or_odd(X) : even(X) <-
     .print(X, " is even").
 
+// Rule for even numbers
+even(X) :- X mod 2 == 0.
+
+
 /* 
  * Plan for reacting to the addition of the goal !start_even_or_odd(X)
  * Triggering event: addition of goal !start_even_or_odd(X)
@@ -69,6 +86,21 @@
 @start_odd_1_2_3_plan
 +!start_even_or_odd(X) : odd(X) <-
     .print(X, " is odd").
+
+
+// Rule for odd numbers
+odd(X) :- X mod 2 \== 0.
+
+
++!check_even_or_odd(Number) : true <- 
+    if (Number mod 2 == 0) {
+        +even(Number);
+        .print(Number, " is even");
+    } else {
+        +odd(Number);
+        .print(Number, " is odd");
+    }.
+
 
 /* 
  * Plan for reacting to the failure of the goal !start_even_or_odd(X)
@@ -92,7 +124,15 @@
    .print("List with integers from ", Start, " to ", End, ": ", List).
 
 /* Task 1.2.4 Start of your solution */
-// You are allowed to use a triggering event other than the one provided 
+
++!compute_list(Start, End, AccList, List) : Start <= End <-
+   NewStart = Start + 1;
+   !compute_list(NewStart, End, [Start | AccList], List).
+
++!compute_list(Start, End, AccList, List) : Start > End <-
+   List = AccList;
+   .print("Generated list: ", List).
+
 /* Task 1.2.4 End of your solution */
 
 /* 
